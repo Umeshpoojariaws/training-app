@@ -1,4 +1,4 @@
-name: Build and Push Training Image
+name: Build and Push Training Image to GCR
 
 on:
   push:
@@ -7,11 +7,9 @@ on:
 
 jobs:
   call-reusable-workflow:
-    # IMPORTANT: Replace 'your-github-username' with your actual username
     uses: Umeshpoojariaws/shared-workflows/.github/workflows/reusable-build-push.yml@main
     with:
       image-name: training
-      docker-repo-url: ${{ vars.DOCKER_REPO_URL }}
+      gcp-project-id: ${{ vars.GCP_PROJECT_ID }}
     secrets:
-      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
