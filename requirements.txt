@@ -1,0 +1,3 @@
+pandas
+mlflow-skinny
+scikit-learn
