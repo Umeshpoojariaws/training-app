@@ -14,7 +14,7 @@ mlflow.set_experiment("Weather Forecast")
 
 with mlflow.start_run() as run:
     # Load the dataset
-    df = pd.read_csv('data/*.csv')
+    df = pd.read_csv('data/data_02.csv')
 
     # Define features and target
     features = ['today_temp', 'humidity', 'wind_speed']
