@@ -10,7 +10,7 @@ from mlflow.models.signature import infer_signature
 os.environ['MLFLOW_TRACKING_URI'] = 'http://mlflow:5000'
 
 # Set the experiment name
-mlflow.set_experiment("Weather Forecast")
+mlflow.set_experiment("Weather-Forecast")
 
 with mlflow.start_run() as run:
     # Load the dataset
