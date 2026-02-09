@@ -33,20 +33,19 @@ with mlflow.start_run() as run:
     sample_input = X_train.head(1).astype('float64')
     signature = infer_signature(sample_input, model.predict(sample_input))
 
-    # Log the model
-    mlflow.sklearn.log_model(
+    # Log the model and get the resulting model version
+    model_info = mlflow.sklearn.log_model(
         sk_model=model,
         artifact_path="weather-forecast-model",
         signature=signature,
         registered_model_name="weather-forecaster"
     )
 
-    # Transition the latest version of the model to the "Staging" stage
+    # Transition the newly created model version to the "Staging" stage
     client = mlflow.tracking.MlflowClient()
-    latest_version = client.get_latest_versions("weather-forecaster", stages=["None"])[0]
     client.transition_model_version_stage(
         name="weather-forecaster",
-        version=latest_version.version,
+        version=model_info.version,
         stage="Staging"
     )
 
