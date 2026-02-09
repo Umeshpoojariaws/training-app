@@ -41,6 +41,16 @@ with mlflow.start_run() as run:
         registered_model_name="weather-forecaster"
     )
 
+    # Transition the latest version of the model to the "Staging" stage
+    client = mlflow.tracking.MlflowClient()
+    latest_version = client.get_latest_versions("weather-forecaster", stages=["None"])[0]
+    client.transition_model_version_stage(
+        name="weather-forecaster",
+        version=latest_version.version,
+        stage="Staging"
+    )
+
+
     # Evaluate the model
     y_pred = model.predict(X_test)
     mse = mean_squared_error(y_test, y_pred)

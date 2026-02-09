@@ -1,4 +1,4 @@
-name: Build, Push, and Deploy Backend
+name: Build, Push, and Deploy Training Job
 
 on:
   push:
