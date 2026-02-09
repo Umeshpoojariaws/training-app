@@ -42,12 +42,22 @@ with mlflow.start_run() as run:
     )
 
     # Transition the newly created model version to the "Staging" stage
+    print(f"Attempting to transition model '{model_info.name}' version {model_info.version} to 'Staging'...")
     client = mlflow.tracking.MlflowClient()
-    client.transition_model_version_stage(
-        name="weather-forecaster",
-        version=model_info.version,
-        stage="Staging"
-    )
+    try:
+        updated_model_version = client.transition_model_version_stage(
+            name="weather-forecaster",
+            version=model_info.version,
+            stage="Staging"
+        )
+        print(f"Successfully transitioned model. Current stage: '{updated_model_version.current_stage}'")
+        if updated_model_version.current_stage != "Staging":
+            print("!!! WARNING: Stage transition was called but the stage did not update to 'Staging'. Check MLflow server permissions and configuration. !!!")
+    except Exception as e:
+        print(f"!!! ERROR: Failed to transition model stage: {e} !!!")
+        # Re-raising the exception to ensure the pipeline fails if staging fails.
+        raise
+
 
 
     # Evaluate the model
