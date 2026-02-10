@@ -41,26 +41,30 @@ with mlflow.start_run() as run:
         registered_model_name="weather-forecaster"
     )
 
-    # For debugging: print all available attributes of the model_info object
-    print("--- Debugging model_info object ---")
-    print(dir(model_info))
-    print("------------------------------------")
-
-    # Transition the newly created model version to the "Staging" stage
-    print(f"Attempting to transition model '{model_info.name}' version {model_info.registered_model_version} to 'Staging'...")
+    # Set an alias for the staging environment and a tag for UI visibility
+    print(f"Attempting to set alias '@staging' for model '{model_info.name}' version {model_info.registered_model_version}...")
     client = mlflow.tracking.MlflowClient()
     try:
-        updated_model_version = client.transition_model_version_stage(
+        # Set the alias (the new 'Staging')
+        client.set_registered_model_alias(
+            name="weather-forecaster",
+            alias="staging",
+            version=model_info.registered_model_version
+        )
+        print(f"Successfully set alias '@staging' for model version {model_info.registered_model_version}.")
+
+        # Set a tag for better visibility in the UI
+        client.set_model_version_tag(
             name="weather-forecaster",
             version=model_info.registered_model_version,
-            stage="Staging"
+            key="status",
+            value="staging"
         )
-        print(f"Successfully transitioned model. Current stage: '{updated_model_version.current_stage}'")
-        if updated_model_version.current_stage != "Staging":
-            print("!!! WARNING: Stage transition was called but the stage did not update to 'Staging'. Check MLflow server permissions and configuration. !!!")
+        print(f"Successfully set tag 'status: staging' for model version {model_info.registered_model_version}.")
+
     except Exception as e:
-        print(f"!!! ERROR: Failed to transition model stage: {e} !!!")
-        # Re-raising the exception to ensure the pipeline fails if staging fails.
+        print(f"!!! ERROR: Failed to set alias or tag for the model: {e} !!!")
+        # Re-raising the exception to ensure the pipeline fails if the process fails.
         raise
 
 
