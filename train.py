@@ -41,13 +41,18 @@ with mlflow.start_run() as run:
         registered_model_name="weather-forecaster"
     )
 
+    # For debugging: print all available attributes of the model_info object
+    print("--- Debugging model_info object ---")
+    print(dir(model_info))
+    print("------------------------------------")
+
     # Transition the newly created model version to the "Staging" stage
-    print(f"Attempting to transition model '{model_info.name}' version {model_info.model_version} to 'Staging'...")
+    print(f"Attempting to transition model '{model_info.name}' version {model_info.registered_model_version} to 'Staging'...")
     client = mlflow.tracking.MlflowClient()
     try:
         updated_model_version = client.transition_model_version_stage(
             name="weather-forecaster",
-            version=model_info.model_version,
+            version=model_info.registered_model_version,
             stage="Staging"
         )
         print(f"Successfully transitioned model. Current stage: '{updated_model_version.current_stage}'")
