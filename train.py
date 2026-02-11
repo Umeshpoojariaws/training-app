@@ -69,10 +69,20 @@ with mlflow.start_run() as run:
 
 
 
-    # Evaluate the model
+    # Evaluate the model on the test set
+    print("Evaluating model and logging metrics...")
     y_pred = model.predict(X_test)
     mse = mean_squared_error(y_test, y_pred)
     mlflow.log_metric("mse", mse)
+    print(f"Logged MSE on test set: {mse}")
+
+    # Save the test data as an artifact for later validation
+    print("Saving test data as an artifact...")
+    test_data = pd.concat([X_test, y_test], axis=1)
+    test_data_path = "test_data.csv"
+    test_data.to_csv(test_data_path, index=False)
+    mlflow.log_artifact(test_data_path, "validation")
+    print(f"Successfully saved '{test_data_path}' to the 'validation' artifact directory.")
 
     run_id = run.info.run_id
     print(f"Model run: {run_id}")
