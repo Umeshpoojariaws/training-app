@@ -34,6 +34,11 @@ def validate_and_promote():
         X_test = test_data[FEATURES]
         y_test = test_data[TARGET]
         print(f"Successfully downloaded test data from run {run_id}")
+
+        # --- FIX: Ensure data types match the model's signature ---
+        X_test = X_test.astype('float64')
+        print("Casted test data to float64 to match model schema.")
+
     except Exception as e:
         print(f"Failed to download test data artifact: {e}. Cannot perform fair validation.")
         return
