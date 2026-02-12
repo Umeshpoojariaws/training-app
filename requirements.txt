@@ -2,3 +2,4 @@ pandas
 mlflow-skinny
 scikit-learn
 evidently
+google-cloud-storage

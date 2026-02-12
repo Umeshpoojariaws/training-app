@@ -4,12 +4,32 @@ import mlflow
 from mlflow.tracking import MlflowClient
 from evidently.report import Report
 from evidently.metric_preset import DataDriftPreset
+from google.cloud import storage
+from datetime import datetime
 
 # --- Configuration ---
 os.environ['MLFLOW_TRACKING_URI'] = 'http://mlflow:5000'
 MODEL_NAME = "weather-forecaster"
+GCS_BUCKET_NAME = "umesh-ml-model-reports"
 FEATURES = ['today_temp', 'humidity', 'wind_speed']
 TARGET = 'tomorrow_temp'
+
+def upload_to_gcs(bucket_name, source_file_name, destination_blob_name):
+    """Uploads a file to the bucket."""
+    try:
+        storage_client = storage.Client()
+        bucket = storage_client.bucket(bucket_name)
+        blob = bucket.blob(destination_blob_name)
+
+        blob.upload_from_filename(source_file_name)
+
+        print(
+            f"File {source_file_name} uploaded to gs://{bucket_name}/{destination_blob_name}."
+        )
+        return True
+    except Exception as e:
+        print(f"Error uploading to GCS: {e}")
+        return False
 
 def monitor_model_drift():
     """
@@ -66,7 +86,14 @@ def monitor_model_drift():
     report_path = "drift_report.html"
     drift_report.save_html(report_path)
     print(f"✅ Successfully saved data drift report to '{report_path}'")
-    print("Open this HTML file in your browser to see the interactive report.")
+
+    # 5. Upload to GCS
+    timestamp = datetime.now().strftime("%Y-%m-%d-%H%M%S")
+    destination_blob_name = f"drift_report_{timestamp}.html"
+    if upload_to_gcs(GCS_BUCKET_NAME, report_path, destination_blob_name):
+        print("🚀 Report successfully uploaded to GCS.")
+    else:
+        print("⚠️ Failed to upload report to GCS.")
 
 
 if __name__ == "__main__":
