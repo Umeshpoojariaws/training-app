@@ -2,6 +2,21 @@ import os
 import pandas as pd
 import mlflow
 from mlflow.tracking import MlflowClient
+
+# --- Debugging ---
+import sys
+try:
+    import evidently
+    print(f"DEBUG: Evidently version: {evidently.__version__}")
+    print(f"DEBUG: Evidently path: {evidently.__file__}")
+except ImportError:
+    print("DEBUG: Evidently not installed!")
+    print(f"DEBUG: Python path: {sys.path}")
+    import subprocess
+    print("DEBUG: Installed packages:")
+    subprocess.check_call([sys.executable, "-m", "pip", "list"])
+# -----------------
+
 from evidently.report import Report
 from evidently.metric_preset import DataDriftPreset
 from google.cloud import storage
