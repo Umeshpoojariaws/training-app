@@ -1,5 +1,5 @@
 pandas
 mlflow-skinny
 scikit-learn
-evidently
+evidently>=0.8.0
 google-cloud-storage

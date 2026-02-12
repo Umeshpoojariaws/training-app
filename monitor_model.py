@@ -4,7 +4,7 @@ import mlflow
 from mlflow.tracking import MlflowClient
 # REMOVE: from evidently.report import Report  <-- This line causes the error
 from evidently import Report                   # This is the correct 2026 import
-from evidently.metric_preset import DataDriftPreset
+from evidently.presets import DataDriftPreset
 from google.cloud import storage
 from datetime import datetime
 # --- Configuration ---
