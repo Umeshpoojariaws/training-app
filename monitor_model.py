@@ -3,21 +3,35 @@ import pandas as pd
 import mlflow
 from mlflow.tracking import MlflowClient
 
-# --- Debugging ---
+# --- Enhanced Debugging ---
 import sys
+import os
 try:
     import evidently
     print(f"DEBUG: Evidently version: {evidently.__version__}")
     print(f"DEBUG: Evidently path: {evidently.__file__}")
-except ImportError:
-    print("DEBUG: Evidently not installed!")
-    print(f"DEBUG: Python path: {sys.path}")
-    import subprocess
-    print("DEBUG: Installed packages:")
-    subprocess.check_call([sys.executable, "-m", "pip", "list"])
+    
+    # Try the failing import inside the block
+    from evidently.report import Report
+    print("DEBUG: Successfully imported evidently.report.Report")
+    
+except ImportError as e:
+    print(f"DEBUG: ImportError: {e}")
+    # If evidently was imported, inspect its directory
+    if 'evidently' in sys.modules:
+        evidently_path = os.path.dirname(sys.modules['evidently'].__file__)
+        print(f"DEBUG: Listing contents of {evidently_path}:")
+        try:
+            print(os.listdir(evidently_path))
+        except Exception as list_e:
+            print(f"DEBUG: Could not list directory: {list_e}")
+    else:
+        print("DEBUG: Evidently not found in sys.modules.")
+    
+    # Re-raise the exception to see the full traceback and stop execution
+    raise e
 # -----------------
 
-from evidently.report import Report
 from evidently.metric_preset import DataDriftPreset
 from google.cloud import storage
 from datetime import datetime
