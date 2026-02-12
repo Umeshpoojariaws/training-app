@@ -1,5 +1,8 @@
 FROM python:3.9-slim
 
+# Invalidate cache with a temporary label
+LABEL cache-buster="2026-02-12-v1"
+
 WORKDIR /app
 
 COPY requirements.txt .
