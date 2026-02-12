@@ -1,3 +1,4 @@
 pandas
 mlflow-skinny
 scikit-learn
+evidently
