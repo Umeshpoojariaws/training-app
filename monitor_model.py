@@ -2,9 +2,8 @@ import os
 import pandas as pd
 import mlflow
 from mlflow.tracking import MlflowClient
-# REMOVE: from evidently.report import Report  <-- This line causes the error
-from evidently import Report                   # This is the correct 2026 import
-from evidently.presets import DataDriftPreset
+from evidently.report import Report
+from evidently.metric_preset import DataDriftPreset
 from google.cloud import storage
 from datetime import datetime
 # --- Configuration ---
