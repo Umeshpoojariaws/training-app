@@ -2,11 +2,11 @@ import os
 import pandas as pd
 import mlflow
 from mlflow.tracking import MlflowClient
-from evidently.report import Report
+# REMOVE: from evidently.report import Report  <-- This line causes the error
+from evidently import Report                   # This is the correct 2026 import
 from evidently.metric_preset import DataDriftPreset
 from google.cloud import storage
 from datetime import datetime
-
 # --- Configuration ---
 os.environ['MLFLOW_TRACKING_URI'] = 'http://mlflow:5000'
 MODEL_NAME = "weather-forecaster"
