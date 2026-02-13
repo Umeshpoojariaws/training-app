@@ -96,7 +96,8 @@ def monitor_model_drift():
 
     # 4. Save the Report
     report_path = "drift_report.html"
-    drift_report.save_html(report_path) # Use save_html, not save()
+    drift_report.save_html(report_path)
+    print(f"✅ Successfully saved data drift report to '{report_path}'")
 
     # 5. Upload to GCS
     timestamp = datetime.now().strftime("%Y-%m-%d-%H%M%S")
