@@ -2,8 +2,8 @@ import os
 import pandas as pd
 import mlflow
 from mlflow.tracking import MlflowClient
-from evidently.report import Report
-from evidently.metric_preset import DataDriftPreset
+from evidently import Report, Dataset, DataDefinition  # New 2026 components
+from evidently.presets import DataDriftPreset
 from google.cloud import storage
 from datetime import datetime
 # --- Configuration ---
@@ -77,8 +77,7 @@ def monitor_model_drift():
     # Run the report
     drift_report.run(
         reference_data=reference_data[FEATURES + [TARGET]],
-        current_data=current_data[FEATURES + [TARGET]],
-        column_mapping=column_mapping
+        current_data=current_data[FEATURES + [TARGET]]
     )
 
     # 4. Save the Report
