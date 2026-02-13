@@ -2,11 +2,10 @@ import os
 import pandas as pd
 import mlflow
 from mlflow.tracking import MlflowClient
-from evidently import Report, Dataset, DataDefinition # 2026 API
-from evidently.presets import DataDriftPreset
-from evidently import Report, Dataset, DataDefinition
-from evidently.future import Regression  # Import the Regression role mapping
-from evidently.presets import DataDriftPreset
+# New 2026 import paths
+from evidently.future.datasets import Dataset, DataDefinition, Regression
+from evidently.future.report import Report 
+from evidently.future.presets import DataDriftPreset # Use the 'future' presets
 from google.cloud import storage
 from datetime import datetime
 
@@ -67,23 +66,24 @@ def monitor_model_drift():
     # 3. Generate Evidently AI Drift Report
     print("Generating data drift report with Evidently AI...")
     
-    # 2026 Way: Map the target and prediction via a Regression object
+    # 2026 Way: Map columns explicitly via the Regression object
     data_def = DataDefinition(
         regression=[
-            Regression(target=TARGET, prediction=None) # Set prediction=None for now
+            Regression(target=TARGET, prediction=None) 
         ],
         numerical_columns=FEATURES
     )
 
-    # Wrap DataFrames into Dataset objects
+    # In the 'future' API, Dataset objects are required
     ref_dataset = Dataset.from_pandas(reference_data, data_definition=data_def)
     curr_dataset = Dataset.from_pandas(current_data, data_definition=data_def)
 
-    drift_report = Report(metrics=[
+    # Use the Report class from evidently.future
+    drift_report = Report([
         DataDriftPreset(),
     ])
 
-    # Run the report using the Dataset objects
+    # Run the report
     drift_report.run(
         reference_data=ref_dataset,
         current_data=curr_dataset
