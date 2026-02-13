@@ -12,5 +12,6 @@ RUN pip install --upgrade pip && \
     pip install --no-cache-dir --force-reinstall -r requirements.txt
 
 COPY . .
+COPY ./ ./
 
 CMD ["python", "train.py"]
