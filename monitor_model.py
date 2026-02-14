@@ -49,54 +49,29 @@ def monitor_model_drift():
     current_data['humidity'] = current_data['humidity'] * 1.2 + 5 
     print("Simulated current production data with drift.")
 
-    # 3. Generate Report (2026 DataDefinition style)
-    # print("Generating data drift report with Evidently AI...")
-    
-    # data_def = DataDefinition(
-    #     numerical_columns=FEATURES,
-    #     target=TARGET
-    # )
-
-    # ref_dataset = Dataset.from_pandas(reference_data[FEATURES + [TARGET]], data_definition=data_def)
-    # curr_dataset = Dataset.from_pandas(current_data[FEATURES + [TARGET]], data_definition=data_def)
-
-    # drift_report = Report(metrics=[DataDriftPreset()])
-    # drift_report.run(reference_data=ref_dataset, current_data=curr_dataset)
-
     # 3. Generate Evidently AI Drift Report
     print("Generating data drift report with Evidently AI...")
-    
-    # 2026 Way: Map columns explicitly via the Regression object
+
     data_def = DataDefinition(
-        regression=[
-            Regression(target=TARGET, prediction=None) 
-        ],
+        regression=[Regression(target=TARGET, prediction=None)],
         numerical_columns=FEATURES
     )
 
-    # In the 'future' API, Dataset objects are required
     ref_dataset = Dataset.from_pandas(reference_data, data_definition=data_def)
     curr_dataset = Dataset.from_pandas(current_data, data_definition=data_def)
 
-    # Use the Report class from evidently.future
-    drift_report = Report([
-        DataDriftPreset(),
-    ])
+    # Define the report template
+    drift_report_def = Report([DataDriftPreset()])
 
-    # Run the report
-    drift_report.run(
+    # Compute and capture the result (this is key!)
+    drift_report_result = drift_report_def.run(
         reference_data=ref_dataset,
         current_data=curr_dataset
     )
 
-    # # 4. Save the Report (Using save_html)
-    # report_path = "drift_report.html"
-    # drift_report.save_html(report_path) # <--- FIXED
-    # print(f"✅ Successfully saved data drift report to '{report_path}'")
-
     # 4. Save the Report
     report_path = "drift_report.html"
-    drift_report.save_html(report_path)
+    drift_report_result.save_html(report_path)
     print(f"✅ Successfully saved data drift report to '{report_path}'")
 
     # 5. Upload to GCS
