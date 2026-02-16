@@ -4,6 +4,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error
 import os
+import dvc.api
 from mlflow.models.signature import infer_signature
 
 # Set the MLFLOW_TRACKING_URI environment variable
@@ -12,9 +13,20 @@ os.environ['MLFLOW_TRACKING_URI'] = 'http://mlflow:5000'
 # Set the experiment name
 mlflow.set_experiment("Weather-Forecast")
 
+# --- DVC Integration ---
+# Define the path to the data in the DVC repository
+# and the path in the Git repository
+path = 'data/weather_data.csv'
+repo = '/Volumes/user-data/Workspace/project/training-project/project-01/training-app'
+
+# Get the URL of the data file from DVC
+data_url = dvc.api.get_url(
+    path=path
+)
+
 with mlflow.start_run() as run:
-    # Load the dataset
-    df = pd.read_csv('data/weather_data.csv')
+    # Load the dataset using the DVC-provided URL
+    df = pd.read_csv(data_url)
 
     # Define features and target
     features = ['today_temp', 'humidity', 'wind_speed']
