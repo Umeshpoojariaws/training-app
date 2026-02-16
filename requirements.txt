@@ -2,5 +2,4 @@ pandas
 mlflow-skinny
 scikit-learn
 evidently==0.7.20
-dvc
-dvc-gs
+dvc[gs]
