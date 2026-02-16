@@ -2,5 +2,5 @@ pandas
 mlflow-skinny
 scikit-learn
 evidently==0.7.20
-google-cloud-storage
-dvc[gcs]
+dvc
+dvc-gs
